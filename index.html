@@ -59,6 +59,35 @@ button.dl{border:1px solid #cfd6e4;background:#fff;border-radius:8px;padding:8px
 .kpi .kd span,.kpi .v span{font-size:17px;font-weight:700;color:var(--sub);margin-left:3px}
 .kpi .v{font-size:26px;line-height:1.15;margin-top:2px}
 .tabs button{font-size:15px;font-weight:700;padding:7px 16px}
+/* 2026-11-13 사용자 요청: 현황표 아래 허가·착공·준공을 한 줄(3칸)로 — 좁은 화면에서도 세로로 쌓지 않고 카드 높이를 줄여 페이지 길이 단축 */
+.kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px;margin-bottom:14px}
+.kpi{padding:10px 14px}
+.kpi .kt{font-size:21px;gap:6px}
+.kpi .kt small{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--sub);letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .kb{gap:16px;margin-top:6px;flex-wrap:nowrap}
+.kpi .kc{font-size:11.5px}
+.kpi .kd{font-size:30px}
+.kpi .v{font-size:21px}
+.kpi .kd span,.kpi .v span{font-size:13px}
+.kpi .py{font-size:12px;margin-top:0}
+@media(max-width:760px){.kpi{padding:8px 10px}.kpi .kt{font-size:16px}.kpi .kt small,.kpi .on-b{display:none!important}.kpi .kb{flex-direction:column;gap:4px;align-items:flex-start}.kpi .kd{font-size:22px}.kpi .v{font-size:15px}}
+/* 2026-11-13 사용자 요청: 현황표의 건축허가·착공·준공을 칸(상자)으로 나눠 보기 편하게 — 상자를 누르면 아래 지도·표가 그 기준으로 바뀜 */
+#noyu .nzg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#noyu .nzb{border:1px solid var(--line);border-top:5px solid var(--k);border-radius:12px;background:var(--card);overflow:hidden;cursor:pointer;transition:box-shadow .15s}
+#noyu .nzb:hover,#noyu .nzb.on{box-shadow:0 0 0 2px var(--k) inset}
+#noyu .nzh{display:flex;align-items:center;gap:8px;padding:10px 14px 9px;font-size:21px;font-weight:800;color:var(--k);letter-spacing:-.3px;background:color-mix(in srgb,var(--k) 9%,transparent)}
+#noyu .nzh .on-b{font-size:11.5px;font-weight:700;color:#fff;background:var(--k);border-radius:999px;padding:2px 9px;letter-spacing:0;display:none}
+#noyu .nzb.on .nzh .on-b{display:inline-block}
+#noyu .nzh small{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--sub);letter-spacing:0;white-space:nowrap}
+#noyu .nzb.on .nzh small{display:none}
+#noyu .nzb table{width:100%;font-size:13.5px}
+#noyu .nzb tr.hd th{font-size:11.5px;font-weight:700;color:var(--sub);padding:7px 12px;background:transparent;border-bottom:1px solid var(--line)}
+#noyu .nzb td{padding:7px 12px;vertical-align:middle}
+#noyu .nzb td:first-child{white-space:normal;line-height:1.35}
+#noyu .nzb tr.sum td{font-size:14.5px;background:color-mix(in srgb,var(--k) 5%,transparent)}
+#noyu .nzb tr.sum td.dn2{font-size:24px;color:var(--k)}
+#noyu .nzb tr:last-child td{border-bottom:0}
+@media(max-width:1000px){#noyu .nzg{grid-template-columns:1fr}}
 </style></head><body>
 <header>
  <h1>노인복지시설 건축 인허가 대시보드<small>노유자시설 &gt; 노인복지시설 · 허가-02 / 착공-02 / 준공-02 시트 · 단위 ㎡(연면적) · 출처: 국토교통부 세움터 인허가정보집계</small></h1>
@@ -128,7 +157,7 @@ function renderKpis(){
   var tot=sum(curRows()),nat=sum(rowsOf()),nzk=noyuOf(),where=(st.sido==='전국'?'전국':st.sido);
   $('kpis').innerHTML=M.map(function(m,j){
     var share=st.sido==='전국'?'전국 합계':'전국 대비 '+(nat[j]?(tot[j]/nat[j]*100).toFixed(1):'0.0')+'% (전국 '+fmtF(nat[j])+'㎡)';
-    return '<div class="kpi'+(st.metric===j?' on':'')+'" data-j="'+j+'" style="--k:var(--'+m.k+')" title="누르면 아래 지도·표가 '+m.n+' 기준으로 바뀝니다"><div class="kt">'+m.n+'<span class="on-b">지도·표에 표시 중</span></div><div class="t">'+where+' · 누르면 아래 지도·표가 '+m.n+' 기준으로 바뀝니다</div><div class="kb">'+(nzk?'<div><div class="kc">노유자시설 동수</div><div class="kd">'+fmtN(nzk[m.k][0])+'<span>동</span></div></div>':'')+'<div><div class="kc">노인복지시설 연면적</div><div class="v">'+fmtF(tot[j])+'<span>㎡</span></div><div class="py">('+fmtP(tot[j])+'평)</div></div></div><div class="s">'+share+'</div></div>'}).join('');
+    return '<div class="kpi'+(st.metric===j?' on':'')+'" data-j="'+j+'" style="--k:var(--'+m.k+')" title="누르면 아래 지도·표가 '+m.n+' 기준으로 바뀝니다 · '+share+'"><div class="kt">'+m.n+'<span class="on-b">표시 중</span><small>'+share+'</small></div><div class="kb">'+(nzk?'<div><div class="kc">노유자시설 동수</div><div class="kd">'+fmtN(nzk[m.k][0])+'<span>동</span></div></div>':'')+'<div><div class="kc">노인복지시설 연면적</div><div class="v">'+fmtF(tot[j])+'<span>㎡</span></div><div class="py">('+fmtP(tot[j])+'평)</div></div></div></div>'}).join('');
   Array.prototype.forEach.call(document.querySelectorAll('.kpi'),function(e){e.onclick=function(){st.metric=+e.dataset.j;renderAll()}});
 }
 function renderMap(){
@@ -195,14 +224,17 @@ function renderNoyu(){
   if(!nz){el.style.display='none';return}
   el.style.display='block';
   var rows=[['합계',0,4,'sum'],['신축',1,5,''],['증축·개축·이전·대수선',2,6,''],['용도변경',3,7,'']];
+  var tot=sum(curRows()),dash='<span style="color:#b3bac8">-</span>';
   var h='<h2 style="margin-bottom:8px">'+(st.sido==='전국'?'전국':st.sido)+' 인허가 현황표 · 노유자시설 <span style="font-weight:400;font-size:12.5px;color:#667085">(세움터 인허가정보집계 &gt; 지도 &gt; 현황표 · 동수는 동, 연면적은 ㎡)</span></h2>';
-  h+='<div class="tblwrap" style="max-height:none"><table><thead><tr><th rowspan="2">구분</th>'+M.map(function(m,j){return '<th colspan="2" class="g'+m.k+(st.metric===j?' on':'')+'" data-j="'+j+'" title="누르면 아래 지도·표가 '+m.n+' 기준으로 바뀝니다">'+m.n+'</th>'}).join('')+'</tr><tr>'+M.map(function(){return '<th>동수</th><th>연면적 ㎡ (평)</th>'}).join('')+'</tr></thead><tbody>';
-  rows.forEach(function(r){h+='<tr class="'+r[3]+'"><td>'+r[0]+'</td>'+M.map(function(m){var a=nz[m.k];return '<td class="dn2">'+(a[r[1]]?fmtN(a[r[1]])+'동':'<span style="color:#b3bac8">-</span>')+'</td><td>'+(a[r[2]]?fmtF(a[r[2]])+'<br><span class="py">('+fmtP(a[r[2]])+'평)</span>':'<span style="color:#b3bac8">-</span>')+'</td>'}).join('')+'</tr>'});
-  var tot=sum(curRows());
-  h+='<tr class="old"><td>이 중 노인복지시설 (엑셀 집계)</td>'+M.map(function(m,j){return '<td>집계 없음</td><td>'+fmtF(tot[j])+'<br><span class="py">('+fmtP(tot[j])+'평)</span></td>'}).join('')+'</tr>';
-  h+='</tbody></table></div><div class="n">※ 세움터 현황표는 <b>노유자시설 전체</b>(노인복지시설, 아동관련시설, 사회복지시설, 근로복지시설 등) 단위까지만 신축·증축·용도변경별 동수를 제공하며, <b>노인복지시설만의 동수는 공개 집계에 없습니다.</b> 노란 행의 노인복지시설 면적은 엑셀(시군구별 용도별 현황) 값이며 지도·표의 시군구 숫자도 같은 값입니다. 시군구별 동수는 제공되지 않습니다.</div>';
+  // 2026-11-13 사용자 요청: 건축허가·착공·준공을 칸(상자) 3개로 나눔 — 상자마다 구분·동수·연면적, 누르면 아래 지도·표 전환
+  h+='<div class="nzg">'+M.map(function(m,j){var a=nz[m.k];
+    var b='<div class="nzb'+(st.metric===j?' on':'')+'" data-j="'+j+'" style="--k:var(--'+m.k+')" title="누르면 아래 지도·표가 '+m.n+' 기준으로 바뀝니다"><div class="nzh">'+m.n+'<span class="on-b">지도·표 표시 중</span><small>누르면 지도·표 전환</small></div><table><tbody><tr class="hd"><th>구분</th><th>동수</th><th>연면적 ㎡ (평)</th></tr>';
+    rows.forEach(function(r){b+='<tr class="'+r[3]+'"><td>'+r[0]+'</td><td class="dn2">'+(a[r[1]]?fmtN(a[r[1]])+'동':dash)+'</td><td>'+(a[r[2]]?fmtF(a[r[2]])+'<br><span class="py">('+fmtP(a[r[2]])+'평)</span>':dash)+'</td></tr>'});
+    b+='<tr class="old"><td>이 중 노인복지시설<br><span class="py">(엑셀 집계)</span></td><td>집계 없음</td><td>'+fmtF(tot[j])+'<br><span class="py">('+fmtP(tot[j])+'평)</span></td></tr>';
+    return b+'</tbody></table></div>'}).join('')+'</div>';
+  h+='<div class="n">※ 세움터 현황표는 <b>노유자시설 전체</b>(노인복지시설, 아동관련시설, 사회복지시설, 근로복지시설 등) 단위까지만 신축·증축·용도변경별 동수를 제공하며, <b>노인복지시설만의 동수는 공개 집계에 없습니다.</b> 노란 행의 노인복지시설 면적은 엑셀(시군구별 용도별 현황) 값이며 지도·표의 시군구 숫자도 같은 값입니다. 시군구별 동수는 제공되지 않습니다.</div>';
   el.innerHTML=h;
-  Array.prototype.forEach.call(el.querySelectorAll('thead th[data-j]'),function(th){th.onclick=function(){st.metric=+th.dataset.j;renderAll()}});
+  Array.prototype.forEach.call(el.querySelectorAll('.nzb[data-j]'),function(bx){bx.onclick=function(){st.metric=+bx.dataset.j;renderAll()}});
 }
 function renderAll(){renderKpis();renderNoyu();renderMap();renderTable();renderNote();
   Array.prototype.forEach.call(document.querySelectorAll('#tabs button'),function(b,j){b.className=j===st.metric?'on':''})}
